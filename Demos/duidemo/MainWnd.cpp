@@ -87,7 +87,7 @@ void CMainWnd::InitWindow()
 	CWebBrowserUI* pBrowser2 = static_cast<CWebBrowserUI*>(m_pm.FindControl(_T("oneclick_browser2")));
 	pBrowser2->SetWebBrowserEventHandler(this);
 	pBrowser1->NavigateUrl(_T("http://blog.csdn.net/duisharp"));
-	pBrowser2->NavigateUrl(_T("http://www.51haoliandan.com"));
+	pBrowser2->NavigateUrl(_T("http://www.winradar.com"));
 
 	// 动态创建Combo
 	CComboUI* pFontSize = static_cast<CComboUI*>(m_pm.FindControl(_T("font_size")));
@@ -342,10 +342,15 @@ void CMainWnd::Notify(TNotifyUI& msg)
 	{
 		if( name.CompareNoCase(_T("closebtn")) == 0 ) 
 		{
-			if(IDYES == MessageBox(m_hWnd, _T("确定退出duidemo演示程序？"), _T("Duilib旗舰版"), MB_YESNO))
+			if(MSGID_OK == CMsgWnd::MessageBox(m_hWnd, _T("Duilib旗舰版"), _T("确定退出duidemo演示程序？")))
 			{
 				::DestroyWindow(m_hWnd);
 			}
+
+			//if(IDYES == MessageBox(m_hWnd, _T("确定退出duidemo演示程序？"), _T("Duilib旗舰版"), MB_YESNO))
+			//{
+			//	::DestroyWindow(m_hWnd);
+			//}
 			return; 
 		}
 		else if( msg.pSender == m_pMinBtn ) { 
@@ -378,6 +383,21 @@ void CMainWnd::Notify(TNotifyUI& msg)
 		pPro1->SetValue(pSlider->GetValue());
 		pPro2->SetValue(pSlider->GetValue());
 	}
+	else if(msg.sType == _T("predropdown") && name == _T("font_size"))
+	{
+		CComboUI* pFontSize = static_cast<CComboUI*>(m_pm.FindControl(_T("font_size")));
+		if(pFontSize)
+		{
+			pFontSize->RemoveAll();
+			for(int i = 0; i < 10; i++) {
+				CListLabelElementUI * pElement = new CListLabelElementUI();
+				pElement->SetText(_T("测试长文字"));
+				pElement->SetFixedHeight(30);
+				pFontSize->Add(pElement);
+			}
+			pFontSize->SelectItem(0);
+		}
+	}
 
 	return WindowImplBase::Notify(msg);
 }
@@ -386,12 +406,24 @@ void CMainWnd::OnLClick(CControlUI *pControl)
 	CDuiString sName = pControl->GetName();
 	if(sName.CompareNoCase(_T("homepage_btn")) == 0)
 	{
+		// 动态创建Combo
+		CComboUI* pFontSize = static_cast<CComboUI*>(m_pm.FindControl(_T("mycombo")));
+		if(pFontSize)
+		{
+			pFontSize->RemoveAll();
+			CListLabelElementUI * pElement = new CListLabelElementUI();
+			pElement->SetText(_T("测试长文字"));
+			pElement->SetFixedHeight(30);
+			pElement->SetFixedWidth(120);
+			pFontSize->Add(pElement);
+			pFontSize->NeedParentUpdate();
+		}
 		//CComboUI* pFontSize = static_cast<CComboUI*>(m_pm.FindControl(_T("mycombo")));
 		//if(pFontSize)
 		//{
 		//	pFontSize->SetFixedXY(CDuiSize(pFontSize->GetFixedXY().cx + 5, pFontSize->GetFixedXY().cy));
 		//}
-		ShellExecute(NULL, _T("open"), _T("https://github.com/qdtroy"), NULL, NULL, SW_SHOW);
+		//ShellExecute(NULL, _T("open"), _T("https://github.com/qdtroy"), NULL, NULL, SW_SHOW);
 	}
 	else if(sName.CompareNoCase(_T("button1")) == 0)
 	{
@@ -504,6 +536,12 @@ LRESULT CMainWnd::HandleCustomMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	else if(uMsg == WM_TIMER)
 	{
 		bHandled = FALSE;
+	}
+	else if(uMsg == WM_SHOWWINDOW)
+	{
+		bHandled = FALSE;
+		m_pMinBtn->NeedParentUpdate();
+		InvalidateRect(m_hWnd, NULL, TRUE);
 	}
 	else if(uMsg == WM_SYSKEYDOWN || uMsg == WM_KEYDOWN) {
 		int a = 0;
