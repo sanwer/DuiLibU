@@ -226,8 +226,6 @@ namespace DuiLib {
 		HDC GetPaintDC() const;
 		HWND GetPaintWindow() const;
 		HWND GetTooltipWindow() const;
-		int GetTooltipWindowWidth() const;
-		void SetTooltipWindowWidth(int iWidth);
 		int GetHoverTime() const;
 		void SetHoverTime(int iTime);
 
@@ -479,7 +477,7 @@ namespace DuiLib {
 		// 提示信息
 		HWND m_hwndTooltip;
 		TOOLINFO m_ToolTip;
-		
+		int m_nTooltipHoverTime;
 		// RichEdit光标
 		RECT m_rtCaret;
 		bool m_bCaretActive;
@@ -549,7 +547,7 @@ namespace DuiLib {
 		static HINSTANCE m_hResourceInstance;
 		static CDuiString m_pStrResourcePath;
 		static CDuiString m_pStrResourceZip;
-		static CDuiString m_pStrResourceZipPwd;  //Garfield 20160325 带密码zip包解密
+		static CDuiString m_pStrResourceZipPwd;
 		static HANDLE m_hResourceZip;
 		static bool m_bCachedResourceZip;
 		static int m_nResType;
